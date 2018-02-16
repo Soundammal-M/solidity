@@ -1,0 +1,61 @@
+pragma solidity^0.4.0;
+contract simp 
+{
+    uint256 avail;
+    uint256 total=0;
+       address owner;
+      
+      
+      struct libr
+      {
+          
+          string bkname;
+          //uint256 isbn;
+          string aname;
+          uint256 avail;
+         
+      }
+      function simp ()public
+     {
+
+         owner=msg.sender;
+     }
+      modifier onlyowner()
+      {
+          if(msg.sender!=owner)
+          {
+          revert();
+          }
+          _;
+      }
+      mapping(uint256=>libr)s;
+      function abb(uint256 _isbn,string _bkname,string _aname)public onlyowner
+      {
+          
+          s[_isbn].bkname=_bkname;
+          s[_isbn].aname=_aname;
+          s[_isbn].avail=s[_isbn].avail+1;
+          total=total+1;
+          
+      }
+      function retu(uint256 _isbn)public   view returns(uint256,string,string)
+      {
+          return (s[_isbn].avail,s[_isbn].bkname,s[_isbn].aname);
+      }
+      function search(uint256 _isbn)public constant returns(bool)
+      {
+          if( s[_isbn].avail>0)
+          {
+              return true;
+          }
+       }
+          function viewtot()public view returns(uint256)
+        {
+          return (total);
+        }
+         
+      
+          
+      }
+
+    
