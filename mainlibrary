@@ -1,0 +1,61 @@
+pragma solidity^0.4.0;
+import "./project.sol";
+contract student is simp
+{      uint256 statime;
+       uint256 entime;
+       uint256 fine=1;
+       uint256 stubook;
+       uint256 fineamount;
+       function student()public
+       {
+           owner=msg.sender;
+       }
+    
+    struct stude
+     {
+         string dept;
+        string  username;
+          uint256  id;
+          uint256 stubook;
+     }
+     
+     mapping (uint256=>stude)sa;
+       function student1(uint256 _roll,string _username,uint256 _id,string _dept)public
+      {
+          sa[_roll].username=_username;
+          sa[_roll].id=_id;
+          sa[_roll].dept=_dept;
+      }
+     function showstu(uint256 _roll)public view returns(string,uint256,string,uint256)
+      {
+          return( sa[_roll].username,sa[_roll].id, sa[_roll].dept,sa[_roll].stubook);
+      }
+      function getbook(uint256 _isbn,uint256 _roll)public onlyowner
+      {
+          sa[_roll].stubook=sa[_roll].stubook+1;
+           s[_isbn].avail=s[_isbn].avail-1;
+           total=total-1;
+           statime=now;
+           entime=now+1*1 minutes;
+        }
+      function returnbook(uint256 _isbn,uint256 _roll)public  
+      {
+          if(entime<now)
+          {
+             uint256 vari=now-entime;
+             uint256 c=vari/60;
+             fineamount=c*fine;
+          }
+          sa[_roll].stubook=sa[_roll].stubook-1;
+             s[_isbn].avail=s[_isbn].avail+1;
+             total=total+1;
+          }
+      function fines()public view returns(uint256)
+         {
+             return fineamount;
+         }
+          
+      
+      }
+      
+          
