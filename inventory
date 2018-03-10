@@ -1,0 +1,143 @@
+pragma solidity^0.4.0;
+import "./token.sol";
+contract Instrument is Token
+{   
+ 	uint256 statime;
+ 	uint256 entime;
+ 	uint256 x=1;
+ 	uint256 total;
+ 	uint256 count;
+ 	uint256 i;
+ 	uint256[] cid;
+ 	bytes32[] cname;
+ 	bytes32 A;
+	struct musi
+	{
+    	uint256[] id;
+    	bytes32[] mname;
+    	uint256[] avail;
+    	uint256[] price;
+	}
+	mapping (uint256=>musi)s;
+	function addInstrument(uint256 _id,bytes32 _mname,uint256 _avail,uint256 _price)public onlyowner
+	{
+    	s[x].id.push(_id);
+    	s[x].mname.push(_mname);
+    	s[x].avail.push(_avail);
+    	s[x].price.push(_price);
+    	total=total+1;
+	}
+	modifier onlyowner()
+  	{
+      	if(msg.sender!=Owner)
+      	{
+      	revert();
+      	}
+      	_;
+  	}
+	function viewInstrument()public view returns(uint256[],bytes32[],uint256[],uint256[])
+	{
+    	return(s[x].id,s[x].mname,s[x].avail,s[x].price);
+	}
+	function partiInstrument(uint256 _id)public  view returns(bytes32,uint256,uint256)
+	{
+    	for(uint256 i=0;i<(s[x].id.length);i++)
+    	{
+        	if(_id==s[x].id[i])
+        	{
+            	return(s[x].mname[i],s[x].avail[i], s[x].price[i]);
+        	}
+    	}
+	}
+	function search(uint256 _id)public view returns(bool)
+	{
+     	for(uint256 i=0;i<(s[x].id.length);i++)
+    	{
+        	if(_id==s[x].id[i])
+        	{
+            	return true;
+        	}
+    	}
+	}
+	function getInstrument(uint256 _id,uint256 _cid, uint256 count)public
+	{    
+    	for(uint256 i=0;i<(s[x].id.length);i++)
+    	{
+        	if(_id==s[x].id[i])
+        	{
+        	uint256 amount=s[x].price[i]*count;
+        	transfer(Owner,amount);
+        	//uint256 tym=86400*2/(60*60*24);(if we check after 2 days)
+         	statime=now;
+         	entime=now+3*1 minutes;
+         	s[x].avail[i]=s[x].avail[i]-count;
+         	if(s[x].avail[i]>5)
+         	{
+         	    bytes32 A="available instrument is too low";
+         	}
+          	total=total-1;
+        	}
+    	}
+	}
+	function returnInstrument(uint256 _id,uint256 count,address to)public
+	{
+    	require(entime<now);
+      	{
+          	for(uint256 i=0;i<s[x].id.length;i++)
+          	{
+              	if(_id==s[x].id[i])
+              	{
+         	uint256 vari=now-entime;
+         	uint256 c=vari/60;
+         	uint256 amount=s[x].price[i]*count;
+         	transfer(to,amount);
+         	s[x].avail[i]=s[x].avail[i]+count;
+         	total=total+1;
+              	}
+          	}
+       	 
+      	}
+
+	}
+	function totalInstrument()public onlyowner  view returns(uint256)
+ 	{
+     	return total;
+ 	}
+ 	uint256 tokenp=0.5 ether;
+ 	function transferether() public payable
+ 	{
+      	uint256 token=msg.value/tokenp;
+      	require(token<=balances[Owner]&& msg.value==(token*tokenp));
+      	balances[msg.sender]=balances[msg.sender]+token;
+      	balances[Owner]=balances[Owner]-token;
+      	Owner.transfer(msg.value);
+      	if(balances[Owner]==0)
+      	{
+          	selfdestruct(Owner);
+      	}
+ 	}
+ 	function addcustomer(uint256 _cid,bytes32 _cname)public
+ 	{
+    	cid.push(_cid);
+    	cname.push(_cname);
+ 	}
+ 	function viewcustomer(uint256 _cid)public view returns(uint256[],bytes32[])
+ 	{
+     	return (cid,cname);
+ 	}
+ 	function alert()public view returns (bytes32)
+ 	{
+ 	    return A;
+ 	}
+ 	
+
+    
+}
+
+
+    
+
+
+
+
+
